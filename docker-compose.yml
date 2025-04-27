@@ -1,0 +1,55 @@
+services:
+    nginx:
+        image: "nginx:stable-alpine"
+        ports:
+            - "8000:80"
+        restart: unless-stopped
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+            - .:/var/www/laravel
+        depends_on:
+            - php
+        networks:
+            - local_network
+
+    php:
+        build:
+            context: ./docker/dockerfiles
+            dockerfile: php.Dockerfile
+        restart: unless-stopped
+        volumes:
+            - .:/var/www/laravel
+        user: "1000:1000"
+        networks:
+            - local_network
+
+    composer:
+        build:
+            context: ./docker/dockerfiles
+            dockerfile: composer.Dockerfile
+        volumes:
+            - .:/var/www/laravel
+        user: "1000:1000"
+        networks:
+            - local_network
+
+    artisan:
+        build:
+            context: ./docker/dockerfiles
+            dockerfile: php.Dockerfile
+        volumes:
+            - .:/var/www/laravel
+        user: "1000:1000"
+        networks:
+            - local_network
+        entrypoint: ["php", "/var/www/laravel/artisan"]
+
+volumes:
+    db_data:
+    elastic_data:
+    rabbitdata:
+    redisdata:
+
+networks:
+    local_network:
+        driver: bridge
