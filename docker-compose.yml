@@ -23,6 +23,40 @@ services:
         networks:
             - local_network
 
+    db:
+        image: mariadb
+        ports:
+            - "3300:3306"
+        restart: unless-stopped
+        env_file:
+            - .env
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ALLOW_EMPTY_PASSWORD: YES
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - local_network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        ports:
+            - 8800:80
+        depends_on:
+            - db
+        restart: unless-stopped
+        environment:
+            PMA_HOST: db
+            PMA_USER: ${DB_USERNAME}
+            PMA_PASSWORD: ${DB_PASSWORD}
+            PMA_ARBITRARY: 1
+            UPLOAD_LIMIT: 640M
+        networks:
+            - local_network
+
     composer:
         build:
             context: ./docker/dockerfiles

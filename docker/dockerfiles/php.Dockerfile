@@ -16,8 +16,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd mbstring bcmath zip
-
+    && docker-php-ext-install pdo pdo_mysql gd mbstring bcmath zip
 
 RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 RUN chown -R www-data:www-data /var/www/laravel
