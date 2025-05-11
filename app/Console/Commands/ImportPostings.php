@@ -36,7 +36,7 @@ class ImportPostings extends Command
         $ozonService = new OzonService();
         $since = Carbon::now()->subYear();
 
-        /*do {
+        do {
             $offset = 0;
             $shouldRestart = false;
 
@@ -85,7 +85,7 @@ class ImportPostings extends Command
 
             } while (count($postings->result));
 
-        } while ($shouldRestart);*/
+        } while ($shouldRestart);
 
 
         $offset = 0;
