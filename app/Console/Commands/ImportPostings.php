@@ -47,7 +47,7 @@ class ImportPostings extends Command
                     $warehouse = OzonWarehouse::firstOrCreate([
                         'warehouse_id' => $result->analytics_data->warehouse_id
                     ], [
-                        'name' => $result->delivery_method->warehouse,
+                        'name' => $result->analytics_data->warehouse_name,
                         'type' => OzonWarehouseTypes::FBO
                     ]);
                     $posting = OzonPosting::firstOrCreate([
