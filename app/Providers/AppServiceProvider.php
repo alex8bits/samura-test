@@ -3,8 +3,9 @@
 namespace App\Providers;
 
 use App\Http\Controllers\OzonController;
-use App\Services\Ozon\OzonProductInterface;
-use App\Services\Ozon\OzonShowService;
+use App\Services\Ozon\Product\OzonProductInterface;
+use App\Services\Ozon\Product\OzonProductShowService;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->when(OzonController::class)
             ->needs(OzonProductInterface::class)
-            ->give(OzonShowService::class);
+            ->give(OzonProductShowService::class);
     }
 
     /**
@@ -24,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrap();
     }
 }

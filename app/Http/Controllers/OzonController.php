@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exports\OzonProductExport;
-use App\Services\Ozon\OzonShowService;
-use Illuminate\Http\Request;
+use App\Services\Ozon\Product\OzonProductShowService;
 use Maatwebsite\Excel\Facades\Excel;
 
 class OzonController extends Controller
 {
-    public function __construct(protected OzonShowService $service)
+    public function __construct(protected OzonProductShowService $service)
     {}
 
     public function index()

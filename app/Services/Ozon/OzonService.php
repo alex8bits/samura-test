@@ -41,10 +41,6 @@ class OzonService
         }
         $results = $response->object();
 
-        if ($results->result->total == 0) {
-            return false;
-        }
-
         return $results->result;
     }
 
@@ -54,6 +50,50 @@ class OzonService
             'offer_id' => $offers
         ]);
         if (!$response->successful()) {
+            return false;
+        }
+        $results = $response->object();
+
+        return $results;
+    }
+
+    public function getPostingsFbo($offset = 0, $since = null, $to = null)
+    {
+        $params = [
+            'filter' => [
+                'since' => $since ?? now()->subYear()->format('Y-m-d') . 'T00:00:00Z',
+                'to' => $to ?? now()->format('Y-m-d') . 'T' . now()->format('H:i:s') . 'Z',
+            ],
+            'limit' => 1000,
+            'offset' => $offset,
+            'with' => [
+                'analytics_data' => true
+            ]
+        ];
+        $response = $this->http->post($this->baseUrl . '/v2/posting/fbo/list', $params);
+
+        if (!$response->successful()) {
+            return false;
+        }
+        $results = $response->object();
+
+        return $results;
+    }
+
+    public function getPostingsFbs($offset = 0, $since = null, $to = null)
+    {
+        $params = [
+            'filter' => [
+                'since' => $since ?? now()->subYear()->addMinute(),
+                'to' => $to ?? now(),
+            ],
+            'limit' => 1000,
+            'offset' => $offset
+        ];
+        $response = $this->http->post($this->baseUrl . '/v3/posting/fbs/list', $params);
+
+        if (!$response->successful()) {
+            dd($response->body());
             return false;
         }
         $results = $response->object();

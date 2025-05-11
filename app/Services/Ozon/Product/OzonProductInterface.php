@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Ozon;
+namespace App\Services\Ozon\Product;
 
 interface OzonProductInterface
 {

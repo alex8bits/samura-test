@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services\Ozon;
+namespace App\Services\Ozon\Product;
 
 use App\Models\Product;
+use App\Services\Ozon\OzonService;
 
-class OzonImportService implements OzonProductInterface
+class OzonProductImportService implements OzonProductInterface
 {
     protected $ozonService;
 
