@@ -11,7 +11,9 @@
                 </form>
             </h3>
             <div class="card-tools" style="float: right">
-                <a href="#" class="btn btn-default">Выгрузить заказы</a>
+                <button type="button" class="btn btn-default" data-toggle="modal" data-target="#exportModal">
+                    Выгрузить заказы
+                </button>
             </div>
         </div>
         <div class="card-body">
@@ -53,6 +55,35 @@
             <ul class="pagination pagination-sm m-0 float-right">
                 {{ $postings->appends(request()->except('page'))->links() }}
             </ul>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ route('ozon.posting.export') }}" method="GET"> {{-- Укажи свой маршрут --}}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportModalLabel">Выгрузить заказы</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="date_from">Дата от:</label>
+                            <input type="date" class="form-control" name="date_from" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date_to">Дата до:</label>
+                            <input type="date" class="form-control" name="date_to" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Выгрузить</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 @endsection

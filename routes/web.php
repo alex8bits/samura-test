@@ -18,5 +18,6 @@ Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('hom
 Route::group(['middleware' => ['auth']], function () {
     Route::group(['prefix' => 'ozon'], function () {
         Route::get('postings', [PostingController::class, 'index'])->name('ozon.posting.index');
+        Route::get('postings/export', [PostingController::class, 'export'])->name('ozon.posting.export');
     });
 });
