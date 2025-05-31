@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\OzonPosting;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -12,59 +11,71 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class OzonPostingExport implements FromCollection, WithMapping, WithHeadings, ShouldAutoSize, WithStyles
 {
+    private $flatItems;
+
     public function __construct(private $postings)
     {
-
+        $this->flatItems = $this->postings->flatMap(function ($posting) {
+            return $posting->items->map(function ($product) use ($posting) {
+                $product->parent_posting = $posting;
+                return $product;
+            });
+        });
     }
 
-    /**
-    * @return \Illuminate\Support\Collection
-    */
     public function collection()
     {
-        return $this->postings;
+        return $this->flatItems;
     }
 
     public function headings(): array
     {
         return [
-            'id заказа',
+            'ID заказа',
             'Номер заказа',
             'Номер отправления',
             'Сумма',
             'Склад',
             'Дата',
-            'Товары',
+            'Артикул магазина',
+            'Артикул Ozon',
+            'Название',
+            'Цена',
+            'Количество',
+            'Показов (всего)',
+            'Показов в карточке',
+            'В корзину (всего)',
         ];
     }
 
     public function map($row): array
     {
-        $productList = $row->items?->map(function ($product) {
-            return sprintf(
-                'Артикул: %s, Артикул Ozon: %s, Название: %s, Цена: %.2f, Кол-во: %d',
-                $product->offer_id,
-                $product->sku,
-                $product->name,
-                $product->price,
-                $product->quantity
-            );
-        })->implode(chr(10));
+        $posting = $row->parent_posting;
 
         return [
-            $row->order_id,
-            $row->order_number,
-            $row->posting_number,
-            $row->total(),
-            $row->warehouse->type->name,
-            $row->created_at->format('H:i d.m.Y'),
-            $productList,
+            $posting->order_id,
+            $posting->order_number,
+            $posting->posting_number,
+            $posting->total(),
+            $posting->warehouse->type->name ?? '',
+            $posting->created_at->format('H:i d.m.Y'),
+
+            $row->offer_id,
+            $row->sku,
+            $row->name,
+            number_format($row->price, 2, '.', ''),
+            $row->quantity,
+
+            optional($row->getProduct())->getHitsView() ?? 0,
+            optional($row->getProduct())->getHitsViewPdp() ?? 0,
+            optional($row->getProduct())->getHitsViewToCart() ?? 0,
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('D')->getAlignment()->setWrapText(true);
+        $sheet->getStyle('A1:N1')->getFont()->setBold(true);
+        $sheet->getStyle('A:N')->getAlignment()->setWrapText(true);
 
         return [];
     }
