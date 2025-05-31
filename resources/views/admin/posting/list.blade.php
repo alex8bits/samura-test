@@ -29,25 +29,35 @@
                 </thead>
                 <tbody>
                 @foreach($postings as $posting)
-                    <tr>
-                        <td>{{ $posting->order_number }}</td>
-                        <td>{{ $posting->order_id }}</td>
-                        <td>{{ $posting->posting_number }}</td>
-                        <td><ul class="list-unstyled">
-                                @foreach($posting->items as $product)
-                                    <li>
-                                        <strong>Артикул в магазине:</strong> {{ $product->offer_id }}<br>
-                                        <strong>Артикул в Ozon:</strong> {{ $product->sku }}<br>
-                                        <strong>Цена:</strong> {{ number_format($product->price, 2, '.', ' ') }}<br>
-                                        <strong>Количество:</strong> {{ $product->quantity }}
-                                    </li>
-                                @endforeach
-                            </ul></td>
-                        <td>{{ number_format($posting->total(), 2, '.', ' ') }}</td>
-                        <td>{{ $posting->warehouse->type->name }}</td>
-                        <td>{{ ($posting->created_at)->format('H:i d.m.Y') }}</td>
-                    </tr>
+                    @foreach($posting->items as $index => $product)
+                        <tr>
+                            @if($index == 0)
+                                <td rowspan="{{ count($posting->items) }}">{{ $posting->order_number }}</td>
+                                <td rowspan="{{ count($posting->items) }}">{{ $posting->order_id }}</td>
+                                <td rowspan="{{ count($posting->items) }}">{{ $posting->posting_number }}</td>
+                            @endif
+
+                            <td>
+                                <strong>Артикул в магазине:</strong> {{ $product->offer_id }}<br>
+                                <strong>Артикул в Ozon:</strong> {{ $product->sku }}<br>
+                                <strong>Цена:</strong> {{ number_format($product->price, 2, '.', ' ') }}<br>
+                                <strong>Количество:</strong> {{ $product->quantity }}<br>
+                                @if(!is_null($product->getProduct()))
+                                    <strong>Всего показов:</strong> {{ $product->getProduct()->getHitsView() }}<br>
+                                    <strong>Показов в карточке:</strong> {{ $product->getProduct()->getHitsViewPdp() }}<br>
+                                    <strong>Всего в корзину:</strong> {{ $product->getProduct()->getHitsViewToCart() }}<br>
+                                @endif
+                            </td>
+
+                            @if($index == 0)
+                                <td rowspan="{{ count($posting->items) }}">{{ number_format($posting->total(), 2, '.', ' ') }}</td>
+                                <td rowspan="{{ count($posting->items) }}">{{ $posting->warehouse->type->name }}</td>
+                                <td rowspan="{{ count($posting->items) }}">{{ ($posting->created_at)->format('H:i d.m.Y') }}</td>
+                            @endif
+                        </tr>
+                    @endforeach
                 @endforeach
+
                 </tbody>
             </table>
         </div>

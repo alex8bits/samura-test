@@ -83,7 +83,7 @@ class ImportPostings extends Command
                     break;
                 }
 
-            } while (count($postings->result));
+            } while ($postings->result && count($postings->result));
 
         } while ($shouldRestart);
 

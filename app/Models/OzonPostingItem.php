@@ -22,4 +22,9 @@ class OzonPostingItem extends Model
         'sku',
         'quantity',
     ];
+
+    public function getProduct(): ?OzonProduct
+    {
+        return OzonProduct::whereSku($this->sku)->first();
+    }
 }

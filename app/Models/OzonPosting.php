@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\DTO\OzonProductData;
 use App\Filters\QueryFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Model;
 
 /**

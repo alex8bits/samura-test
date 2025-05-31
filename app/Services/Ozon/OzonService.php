@@ -3,6 +3,7 @@
 namespace App\Services\Ozon;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OzonService
 {
@@ -73,6 +74,7 @@ class OzonService
         $response = $this->http->post($this->baseUrl . '/v2/posting/fbo/list', $params);
 
         if (!$response->successful()) {
+            Log::warning('getPostingsFbo not successful', ['response' => $response->getBody()]);
             return false;
         }
         $results = $response->object();
@@ -93,11 +95,38 @@ class OzonService
         $response = $this->http->post($this->baseUrl . '/v3/posting/fbs/list', $params);
 
         if (!$response->successful()) {
-            dd($response->body());
+            Log::warning('getPostingsFbs not successful', ['response' => $response->getBody()]);
             return false;
         }
         $results = $response->object();
 
         return $results;
+    }
+
+    public function getAnalyticsData()
+    {
+        $params = [
+            'date_from' => now()->subYear()->format('Y-m-d'),
+            'date_to' => now()->format('Y-m-d'),
+            'metrics' => [
+                "hits_view",
+                "hits_view_pdp",
+                "hits_tocart"
+            ],
+            'dimension' => [
+                'sku'
+            ],
+            'limit' => 1000
+        ];
+
+        $response = $this->http->post($this->baseUrl . '/v1/analytics/data', $params);
+
+        if (!$response->successful()) {
+            Log::warning('getAnalyticsData not successful', ['response' => $response->getBody()]);
+            return false;
+        }
+        $results = $response->object();
+
+        return $results->result->data;
     }
 }

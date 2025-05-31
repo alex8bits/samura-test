@@ -2,7 +2,7 @@
 
 namespace App\Services\Ozon\Product;
 
-use App\Models\Product;
+use App\Models\OzonProduct;
 use App\Services\Ozon\OzonService;
 
 class OzonProductImportService implements OzonProductInterface
@@ -37,11 +37,13 @@ class OzonProductImportService implements OzonProductInterface
     protected function updateProducts($items)
     {
         foreach ($items as $item) {
-            Product::updateOrCreate([
-                'article' => $item->offer_id,
+            OzonProduct::updateOrCreate([
+                'product_id' => $item->id,
             ], [
+                'offer_id' => $item->offer_id,
                 'name' => $item->name,
                 'price' => $item->price,
+                'sku' => $item->sources[0]->sku ?? null,
             ]);
         }
     }
