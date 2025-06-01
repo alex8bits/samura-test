@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('ozon_posting_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('posting_id')->constrained('ozon_postings', 'id')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('ozon_products', 'id')->cascadeOnDelete();
             $table->string('price');
-            $table->string('offer_id');
-            $table->string('name');
-            $table->unsignedBigInteger('sku');
             $table->unsignedInteger('quantity');
             $table->timestamps();
         });

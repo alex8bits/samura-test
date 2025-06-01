@@ -38,14 +38,14 @@
                             @endif
 
                             <td>
-                                <strong>Артикул в магазине:</strong> {{ $product->offer_id }}<br>
-                                <strong>Артикул в Ozon:</strong> {{ $product->sku }}<br>
+                                <strong>Артикул в магазине:</strong> {{ $product->product->offer_id }}<br>
+                                <strong>Артикул в Ozon:</strong> {{ $product->product->sku }}<br>
                                 <strong>Цена:</strong> {{ number_format($product->price, 2, '.', ' ') }}<br>
                                 <strong>Количество:</strong> {{ $product->quantity }}<br>
                                 @if(!is_null($product->getProduct()))
-                                    <strong>Всего показов:</strong> {{ $product->getProduct()->getHitsView() }}<br>
-                                    <strong>Показов в карточке:</strong> {{ $product->getProduct()->getHitsViewPdp() }}<br>
-                                    <strong>Всего в корзину:</strong> {{ $product->getProduct()->getHitsViewToCart() }}<br>
+                                    <strong>Всего показов:</strong> {{ $product->product->getHitsView() }}<br>
+                                    <strong>Показов в карточке:</strong> {{ $product->product->getHitsViewPdp() }}<br>
+                                    <strong>Всего в корзину:</strong> {{ $product->product->getHitsViewToCart() }}<br>
                                 @endif
                             </td>
 

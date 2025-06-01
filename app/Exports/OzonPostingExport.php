@@ -18,6 +18,7 @@ class OzonPostingExport implements FromCollection, WithMapping, WithHeadings, Sh
         $this->flatItems = $this->postings->flatMap(function ($posting) {
             return $posting->items->map(function ($product) use ($posting) {
                 $product->parent_posting = $posting;
+
                 return $product;
             });
         });
@@ -66,9 +67,9 @@ class OzonPostingExport implements FromCollection, WithMapping, WithHeadings, Sh
             number_format($row->price, 2, '.', ''),
             $row->quantity,
 
-            optional($row->getProduct())->getHitsView() ?? 0,
-            optional($row->getProduct())->getHitsViewPdp() ?? 0,
-            optional($row->getProduct())->getHitsViewToCart() ?? 0,
+            optional($row->product)->getHitsView() ?? 0,
+            optional($row->product)->getHitsViewPdp() ?? 0,
+            optional($row->product)->getHitsViewToCart() ?? 0,
         ];
     }
 

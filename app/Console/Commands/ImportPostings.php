@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\DTO\OzonWarehouseData;
 use App\Enums\OzonWarehouseTypes;
 use App\Models\OzonPosting;
 use App\Models\OzonPostingItem;
+use App\Models\OzonProduct;
 use App\Models\OzonWarehouse;
 use App\Services\Ozon\OzonService;
 use Illuminate\Console\Command;
@@ -41,6 +41,7 @@ class ImportPostings extends Command
             $shouldRestart = false;
 
             do {
+                usleep(23000);
                 $postings = $ozonService->getPostingsFbo($offset, $since);
                 foreach ($postings->result as $result) {
                     DB::beginTransaction();
@@ -60,15 +61,16 @@ class ImportPostings extends Command
                     ]);
 
                     if ($posting->wasRecentlyCreated) {
-                        foreach ($result->products as $product) {
-                            OzonPostingItem::create([
-                                'posting_id' => $posting->id,
-                                'sku' => $product->sku,
-                                'name' => $product->name,
-                                'quantity' => $product->quantity,
-                                'offer_id' => $product->offer_id,
-                                'price' => $product->price,
-                            ]);
+                        foreach ($result->products as $post_products) {
+                            $product = OzonProduct::whereSku($post_products->sku)->first();
+                            if ($product) {
+                                OzonPostingItem::create([
+                                    'posting_id' => $posting->id,
+                                    'product_id' => $product->id,
+                                    'quantity' => $post_products->quantity,
+                                    'price' => $post_products->price,
+                                ]);
+                            }
                         }
                     }
 
@@ -108,15 +110,16 @@ class ImportPostings extends Command
                     'created_at' => $result->in_process_at,
                 ]);
                 if ($posting->wasRecentlyCreated) {
-                    foreach ($result->products as $product) {
-                        OzonPostingItem::create([
-                            'posting_id' => $posting->id,
-                            'price' => $product->price,
-                            'offer_id' => $product->offer_id,
-                            'name' => $product->name,
-                            'sku' => $product->sku,
-                            'quantity' => $product->quantity,
-                        ]);
+                    foreach ($result->products as $post_products) {
+                        $product = OzonProduct::whereSku($post_products->sku)->first();
+                        if ($product) {
+                            OzonPostingItem::create([
+                                'posting_id' => $posting->id,
+                                'product_id' => $product->id,
+                                'quantity' => $post_products->quantity,
+                                'price' => $post_products->price,
+                            ]);
+                        }
                     }
                 }
                 DB::commit();

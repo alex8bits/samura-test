@@ -16,15 +16,13 @@ class OzonPostingItem extends Model
 {
     protected $fillable = [
         'posting_id',
+        'product_id',
         'price',
-        'offer_id',
-        'name',
-        'sku',
         'quantity',
     ];
 
-    public function getProduct(): ?OzonProduct
+    public function product()
     {
-        return OzonProduct::whereSku($this->sku)->first();
+        return $this->belongsTo(OzonProduct::class);
     }
 }
