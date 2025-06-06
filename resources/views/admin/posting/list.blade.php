@@ -42,7 +42,7 @@
                                 <strong>Артикул в Ozon:</strong> {{ $product->product->sku }}<br>
                                 <strong>Цена:</strong> {{ number_format($product->price, 2, '.', ' ') }}<br>
                                 <strong>Количество:</strong> {{ $product->quantity }}<br>
-                                @if(!is_null($product->getProduct()))
+                                @if(!is_null($product->product))
                                     <strong>Всего показов:</strong> {{ $product->product->getHitsView() }}<br>
                                     <strong>Показов в карточке:</strong> {{ $product->product->getHitsViewPdp() }}<br>
                                     <strong>Всего в корзину:</strong> {{ $product->product->getHitsViewToCart() }}<br>
