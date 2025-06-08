@@ -32,4 +32,20 @@ class OzonPostingFilter extends QueryFilter
 
         $this->builder->whereDate('created_at', '<=', Carbon::parse($value));
     }
+
+    public function sort($val = null)
+    {
+        if (!$val || !Str::contains($val, ','))
+            return $this->builder->orderBy('created_at', 'desc');
+
+        $sort = explode(',', $val);
+
+        if (!in_array($sort[0], ['posting_number', 'order_id', 'order_number', 'warehouse_id', 'price', 'created_at']))
+            return $this->builder->orderBy('created_at', 'desc');
+
+        if (!in_array($sort[1], ['asc', 'desc']))
+            return $this->builder->orderBy('created_at', 'desc');
+
+        $this->builder->orderBy($sort[0], $sort[1]);
+    }
 }

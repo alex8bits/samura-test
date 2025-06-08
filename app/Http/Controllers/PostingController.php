@@ -12,7 +12,7 @@ class PostingController extends Controller
 {
     public function index(Request $request, OzonPostingFilter $filter)
     {
-        $postings = OzonPosting::latest()->filter($filter)->paginate();
+        $postings = OzonPosting::filter($filter)->paginate();
 
         return view('admin.posting.list', compact('postings'));
     }

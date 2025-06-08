@@ -26,7 +26,7 @@ class AddPriceToPostings extends Command
      */
     public function handle()
     {
-        OzonPosting::whereNull('price')->chunk(100, function ($ozonPostings) {
+        OzonPosting::whereNull('price')->chunkById(100, function ($ozonPostings) {
             /** @var OzonPosting $ozonPosting */
             foreach ($ozonPostings as $ozonPosting) {
                 $total = 0;
