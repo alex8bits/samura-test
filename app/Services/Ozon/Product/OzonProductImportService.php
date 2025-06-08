@@ -42,7 +42,7 @@ class OzonProductImportService implements OzonProductInterface
             ], [
                 'offer_id' => $item->offer_id,
                 'name' => $item->name,
-                'price' => $item->price,
+                'price' => $item->marketing_price,
                 'sku' => $item->sources[0]->sku ?? null,
             ]);
         }
