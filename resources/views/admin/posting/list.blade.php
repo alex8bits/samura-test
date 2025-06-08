@@ -31,10 +31,19 @@
     <div class="card">
         <div class="card-header bg-gradient-primary">
             <h3 class="card-title mt-2">
-                <form class="form-inline">
-                    <input type="text" name="search" class="form-control mr-1" value="{{ request('search') }}"
-                           placeholder="поиск">
-                    <input type="submit" class="form-control" value="Найти">
+                <form class="form-inline" id="filterForm">
+                    <input type="text" name="search" class="form-control mr-2"
+                           value="{{ request('search') }}" placeholder="поиск">
+
+                    <input type="text" id="daterange" class="form-control mr-2" placeholder="Интервал дат">
+                    <input type="hidden" name="date_from" id="date_from">
+                    <input type="hidden" name="date_to" id="date_to">
+
+                    @if(request('sort'))
+                        <input type="hidden" name="sort" value="{{ request('sort') }}">
+                    @endif
+
+                    <button type="submit" class="btn btn-default">Найти</button>
                 </form>
             </h3>
             <div class="card-tools" style="float: right">
@@ -51,7 +60,7 @@
                     <th rowspan="2">{!! sortable('id заказа', 'order_id') !!}</th>
                     {{--<th rowspan="2">{!! sortable('Номер отправления', 'posting_number') !!}</th>--}}
                     <th rowspan="2">{!! sortable('Сумма', 'price') !!}</th>
-                    <th rowspan="2">{!! sortable('Склад', 'warehouse') !!}</th>
+                    <th rowspan="2">{!! sortable('Склад', 'warehouse_id') !!}</th>
                     <th rowspan="2">{!! sortable('Дата', 'created_at') !!}</th>
                     <th colspan="7" class="text-center">Товары</th>
                 </tr>
@@ -126,4 +135,38 @@
             </form>
         </div>
     </div>
+@endsection
+
+@section('js')
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#daterange').daterangepicker({
+                autoUpdateInput: true,
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    applyLabel: 'Применить',
+                    cancelLabel: 'Очистить',
+                    daysOfWeek: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+                    monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                        'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+                    firstDay: 1
+                }
+            }, function(start, end) {
+                document.getElementById('date_from').value = start.format('YYYY-MM-DD');
+                document.getElementById('date_to').value = end.format('YYYY-MM-DD');
+                document.getElementById('filterForm').submit();
+            });
+
+            $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+                $('#date_from').val('');
+                $('#date_to').val('');
+                document.getElementById('filterForm').submit();
+            });
+        });
+    </script>
 @endsection

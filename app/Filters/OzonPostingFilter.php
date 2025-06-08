@@ -21,15 +21,11 @@ class OzonPostingFilter extends QueryFilter
 
     public function date_from($value = null)
     {
-        if (!$value || !Carbon::parse($value)) return;
-
         $this->builder->whereDate('created_at', '>=', Carbon::parse($value));
     }
 
     public function date_to($value = null)
     {
-        if (!$value || !Carbon::parse($value)) return;
-
         $this->builder->whereDate('created_at', '<=', Carbon::parse($value));
     }
 
