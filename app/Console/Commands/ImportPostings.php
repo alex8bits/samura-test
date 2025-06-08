@@ -61,7 +61,9 @@ class ImportPostings extends Command
                     ]);
 
                     if ($posting->wasRecentlyCreated) {
+                        $total = 0;
                         foreach ($result->products as $post_products) {
+                            $total += $post_products->price * $post_products->quantity;
                             $product = OzonProduct::whereSku($post_products->sku)->first();
                             if ($product) {
                                 OzonPostingItem::create([
@@ -72,6 +74,7 @@ class ImportPostings extends Command
                                 ]);
                             }
                         }
+                        $posting->update(['price' => $total]);
                     }
 
                     DB::commit();
@@ -110,7 +113,9 @@ class ImportPostings extends Command
                     'created_at' => $result->in_process_at,
                 ]);
                 if ($posting->wasRecentlyCreated) {
+                    $total = 0;
                     foreach ($result->products as $post_products) {
+                        $total += $post_products->price * $post_products->quantity;
                         $product = OzonProduct::whereSku($post_products->sku)->first();
                         if ($product) {
                             OzonPostingItem::create([
@@ -121,6 +126,7 @@ class ImportPostings extends Command
                             ]);
                         }
                     }
+                    $posting->update(['price' => $total]);
                 }
                 DB::commit();
             }

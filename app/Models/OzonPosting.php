@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $order_id
  * @property $order_number
  * @property $warehouse_id
+ * @property $price
  */
 class OzonPosting extends Model
 {
@@ -19,6 +20,7 @@ class OzonPosting extends Model
         'order_id',
         'order_number',
         'warehouse_id',
+        'price',
         'created_at'
     ];
 
@@ -29,7 +31,7 @@ class OzonPosting extends Model
 
     public function total()
     {
-        return $this->items()->sum('price');
+        return $this->getAttribute('price') ?? $this->items()->sum('price');
     }
 
     public function warehouse()

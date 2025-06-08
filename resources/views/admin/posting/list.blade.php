@@ -22,7 +22,13 @@
                 <th>Номер заказа</th>
                 <th>id заказа</th>
                 <th>Номер отправления</th>
-                <th>Товары</th>
+                <th>Артикул (магазин)</th>
+                <th>Артикул (Ozon)</th>
+                <th>Цена</th>
+                <th>Кол-во</th>
+                <th>Показов</th>
+                <th>Показов в карточке</th>
+                <th>В корзину</th>
                 <th>Сумма</th>
                 <th>Склад</th>
                 <th>Дата</th>
@@ -37,17 +43,13 @@
                                 <td rowspan="{{ count($posting->items) }}">{{ $posting->posting_number }}</td>
                             @endif
 
-                            <td>
-                                <strong>Артикул в магазине:</strong> {{ $product->product->offer_id }}<br>
-                                <strong>Артикул в Ozon:</strong> {{ $product->product->sku }}<br>
-                                <strong>Цена:</strong> {{ number_format($product->price, 2, '.', ' ') }}<br>
-                                <strong>Количество:</strong> {{ $product->quantity }}<br>
-                                @if(!is_null($product->product))
-                                    <strong>Всего показов:</strong> {{ $product->product->getHitsView() }}<br>
-                                    <strong>Показов в карточке:</strong> {{ $product->product->getHitsViewPdp() }}<br>
-                                    <strong>Всего в корзину:</strong> {{ $product->product->getHitsViewToCart() }}<br>
-                                @endif
-                            </td>
+                                <td>{{ $product->product->offer_id ?? '—' }}</td>
+                                <td>{{ $product->product->sku ?? '—' }}</td>
+                                <td>{{ number_format($product->price, 2, '.', ' ') }}</td>
+                                <td>{{ $product->quantity }}</td>
+                                <td>{{ $product->product->getHitsView() ?? '—' }}</td>
+                                <td>{{ $product->product->getHitsViewPdp() ?? '—' }}</td>
+                                <td>{{ $product->product->getHitsViewToCart() ?? '—' }}</td>
 
                             @if($index == 0)
                                 <td rowspan="{{ count($posting->items) }}">{{ number_format($posting->total(), 2, '.', ' ') }}</td>
